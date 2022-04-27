@@ -1,5 +1,8 @@
 package qa.guru.allure;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
@@ -13,6 +16,8 @@ public class SelenideTest {
 
     @Test
     public void testGithubIssue() {
+        SelenideLogger.addListener(  "allure", new AllureSelenide());
+
         open("https://github.com ");
 
         $(".header-search-input").click();
@@ -21,7 +26,7 @@ public class SelenideTest {
 
         $(linkText("eroshenkoam/allure-example")).click();
         $(partialLinkText("Issues")).click();
-        $(withText("#76")).click();
+        $(withText("#76")).should(Condition.visible);
     }
 
 }
