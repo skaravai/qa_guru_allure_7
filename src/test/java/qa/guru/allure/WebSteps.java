@@ -1,7 +1,11 @@
 package qa.guru.allure;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.WebDriverRunner;
+import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
@@ -10,13 +14,14 @@ import static org.openqa.selenium.By.linkText;
 import static org.openqa.selenium.By.partialLinkText;
 
 public class WebSteps {
-     private static final int ISSUE_NUMBER = 76;
+    private static final int ISSUE_NUMBER = 76;
 
     @Step("Открываем главную страницу")
-    public void  openMainPage () {
+    public void openMainPage() {
         open("https://github.com ");
     }
-    @Step("Ищем репозиторий {repo}" )
+
+    @Step("Ищем репозиторий {repo}")
     public void searchForRepository(String repo) {
         $(".header-search-input").click();
         $(".header-search-input").sendKeys(repo);
@@ -24,7 +29,7 @@ public class WebSteps {
     }
 
     @Step("Переходим по ссылке репозитория {repo}")
-    public void clickOnRepositoryLink(String repo ) {
+    public void clickOnRepositoryLink(String repo) {
         $(linkText(repo)).click();
     }
 
@@ -36,5 +41,12 @@ public class WebSteps {
     @Step("Проверяем, что существует Issue c номером {number}")
     public void shouldSeeIssueWithNumber(int number) {
         $(withText("#" + number)).should(Condition.visible);
+        attachScreenshot();
     }
+
+    @Attachment(value = "Мой любимый скриншот", type = "image/png", fileExtension = "png")
+    public byte[] attachScreenshot() {
+        return ((TakesScreenshot) WebDriverRunner.getWebDriver()).getScreenshotAs(OutputType.BYTES);
+    }
+
 }
